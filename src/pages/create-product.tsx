@@ -25,7 +25,7 @@ export default function CreateProductPage() {
     try {
       console.log('Sending data:', data);
 
-      await api.post('/products', {
+      await api.post('/api/products', {
         ...data,
         price: Number(data.price), // Ensure number type
       });
@@ -81,7 +81,7 @@ export default function CreateProductPage() {
         </div>
 
         {/* Floating Bottom Action Button */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background to-transparent z-10">
+        <div className="fixed bottom-20 left-0 right-0 p-4 bg-gradient-to-t from-background via-background to-transparent z-10">
           <Button
             type="submit"
             disabled={isSubmitting}

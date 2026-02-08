@@ -25,7 +25,7 @@ export function ImageUpload({ onUpload, className }: ImageUploadProps) {
       formData.append('file', file); // 'file' must match the @UseInterceptors field name in NestJS
 
       // Sending file to backend
-      const response = await api.post('/upload', formData, {
+      const response = await api.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
