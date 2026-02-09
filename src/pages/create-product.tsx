@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { api } from '@/lib/axios';
-import { ImageUpload } from '@/components/ui/image-upload'; // Импорт компонента загрузки
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios'; // Import AxiosError type
+import { api } from '@/lib/api';
+import { ImageUpload } from '@/components/ui/image-upload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductForm {
   name: string;
@@ -14,27 +17,42 @@ interface ProductForm {
 }
 
 export default function CreateProductPage() {
-  const { register, handleSubmit, setValue, watch } = useForm<ProductForm>();
+  const { register, handleSubmit, setValue } = useForm<ProductForm>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // For debugging/feedback
-  const imageUrl = watch('imageUrl');
-  console.log('Current image URL:', imageUrl);
   const onSubmit = async (data: ProductForm) => {
     setIsSubmitting(true);
     try {
       console.log('Sending data:', data);
 
+      // No need to pass userId - backend extracts it from JWT token automatically
       await api.post('/api/products', {
         ...data,
-        price: Number(data.price), // Ensure number type
+        price: Number(data.price),
       });
 
-      alert('Product created successfully!');
-      // TODO: Redirect or clear form
+      toast({
+        title: 'Success',
+        description: 'Product created successfully!',
+      });
+
+      navigate('/');
     } catch (error) {
-      console.error(error);
-      alert('Failed to create product');
+      console.error('Product creation error:', error);
+
+      // Type-safe error handling for Axios
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data?.message || 'Failed to create product'
+          : 'An unexpected error occurred';
+
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -54,7 +72,6 @@ export default function CreateProductPage() {
               setValue('imageUrl', url);
             }}
           />
-          {/* Hidden input to ensure validation works if needed later */}
           <input type="hidden" {...register('imageUrl', { required: true })} />
         </div>
 
