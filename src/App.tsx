@@ -78,13 +78,14 @@ function App() {
           <span className="text-[10px] font-medium">Sell</span>
         </Link>
 
-        {/* Profile placeholder */}
-        <div
-          className={`flex flex-col items-center gap-1 p-2 w-full text-muted-foreground opacity-50 cursor-not-allowed`}
+        {/* Profile - NOW ACTIVE! */}
+        <Link
+          to="/profile"
+          className={`flex flex-col items-center gap-1 p-2 w-full transition-colors ${location.pathname === '/profile' ? 'text-primary' : 'text-muted-foreground hover:text-primary/70'}`}
         >
-          <User size={24} />
+          <User size={24} strokeWidth={location.pathname === '/profile' ? 2.5 : 2} />
           <span className="text-[10px] font-medium">Profile</span>
-        </div>
+        </Link>
       </nav>
 
       {/* Add Toaster here - it will show toast notifications */}
